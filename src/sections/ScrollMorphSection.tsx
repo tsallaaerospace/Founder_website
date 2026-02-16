@@ -363,7 +363,7 @@ export default function ScrollMorphSection() {
                   : { opacity: 0, filter: "blur(10px)" }
               }
               transition={{ duration: 1 }}
-              className="text-2xl font-medium tracking-tight text-gray-900 md:text-4xl"
+              className="text-2xl font-medium tracking-tight text-gray-900 md:text-3xl 2xl:text-4xl"
             >
               From <span className="text-cyan">Vision</span> to{" "}
               <span className="text-cyan">Reality</span>
@@ -382,6 +382,7 @@ export default function ScrollMorphSection() {
             </motion.p>
           </div>
 
+
           {/* Arc Active Content (Fades in) */}
           <motion.div
             style={{ opacity: contentOpacity, y: contentY }}
@@ -390,14 +391,11 @@ export default function ScrollMorphSection() {
             <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 tracking-tight mb-4">
               A Vision <span className="text-cyan">Engineered for Impact</span>
             </h2>
-            <p className="text-sm md:text-base text-gray-600 max-w-lg leading-relaxed">
+            <p className="text-sm md:text-base 2xl:text-xl 2xl:mt-6 text-gray-600 max-w-lg 2xl:max-w-2xl leading-relaxed">
               From hand-built prototypes to advanced autonomous systems, the company was
               founded on one belief — technology should serve humanity.
             </p>
-            <p className="text-sm md:text-base text-gray-600 max-w-lg leading-relaxed mt-4">
-              Every iteration, every test flight, and every late-night breakthrough has
-              shaped a mission-driven aerospace company built for real-world impact.
-            </p>
+
           </motion.div>
 
           {/* Main Container */}
@@ -416,14 +414,23 @@ export default function ScrollMorphSection() {
                 target = { x: lineX, y: 0, rotation: 0, scale: 1, opacity: 1 };
               } else {
                 const isMobile = containerSize.width < 768;
+                const isLargeMonitor = containerSize.width >= 1600;
                 const minDimension = Math.min(containerSize.width, containerSize.height);
 
-                const circleRadius = Math.min(minDimension * 0.35, 350);
+                // Big monitor stays exactly as requested
+                // Laptop gets slightly smaller radius and scale to avoid overlap & title hit
+                const circleRadius = isLargeMonitor
+                  ? Math.min(minDimension * 0.35, 350)
+                  : Math.min(minDimension * 0.38, 280);
+
+                const circleYOffset = isLargeMonitor ? -60 : -10;
+                const circleBaseScale = isLargeMonitor ? 1 : 0.65;
+
                 const circleAngle = (i / TOTAL_IMAGES) * 360;
                 const circleRad = (circleAngle * Math.PI) / 180;
                 const circlePos = {
                   x: Math.cos(circleRad) * circleRadius,
-                  y: Math.sin(circleRad) * circleRadius - 60,
+                  y: Math.sin(circleRad) * circleRadius + circleYOffset,
                   rotation: circleAngle + 90,
                 };
 
@@ -431,7 +438,7 @@ export default function ScrollMorphSection() {
                 const arcRadius = baseRadius * (isMobile ? 1.4 : 1.1);
                 const arcApexY = containerSize.height * (isMobile ? 0.35 : 0.25);
                 const arcCenterY = arcApexY + arcRadius;
-                const spreadAngle = isMobile ? 100 : 130;
+                const spreadAngle = isMobile ? 100 : (isLargeMonitor ? 130 : 150);
                 const startAngle = -90 - spreadAngle / 2;
                 const step = spreadAngle / (TOTAL_IMAGES - 1);
 
@@ -446,14 +453,14 @@ export default function ScrollMorphSection() {
                   x: Math.cos(arcRad) * arcRadius,
                   y: Math.sin(arcRad) * arcRadius + arcCenterY - 80,
                   rotation: currentArcAngle + 90,
-                  scale: isMobile ? 1.4 : 1.8,
+                  scale: isMobile ? 1.4 : (isLargeMonitor ? 1.8 : 1.6),
                 };
 
                 target = {
                   x: lerp(circlePos.x, arcPos.x, morphValue),
                   y: lerp(circlePos.y, arcPos.y, morphValue),
                   rotation: lerp(circlePos.rotation, arcPos.rotation, morphValue),
-                  scale: lerp(1, arcPos.scale, morphValue),
+                  scale: lerp(circleBaseScale, arcPos.scale, morphValue),
                   opacity: 1,
                 };
               }

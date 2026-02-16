@@ -13,10 +13,15 @@ const HERO_BG_IMAGE = "/hero-founder.jpg";
 
 export default function HeroSection() {
   // Position configuration for manual adjustment
-  const LEFT_PARAGRAPH_TOP_OFFSET = "-167px";  // Adjust vertical position of left paragraph
-  const LEFT_PARAGRAPH_X_OFFSET = "-100px";    // Adjust horizontal position of left paragraph (move left)
-  const RIGHT_PARAGRAPH_TOP_OFFSET = "186px"; // Adjust vertical position of right paragraph (default: mt-12 lg:mt-24)
-  const RIGHT_PARAGRAPH_X_OFFSET = "200px";    // Adjust horizontal position of right paragraph
+  // These will be used with CSS variables to handle larger screens
+  const LEFT_PARAGRAPH_X_OFFSET = "0px";
+  const LEFT_PARAGRAPH_X_OFFSET_XL = "-100px";
+
+  const RIGHT_PARAGRAPH_X_OFFSET = "0px";
+  const RIGHT_PARAGRAPH_X_OFFSET_XL = "150px";
+
+  const LEFT_PARAGRAPH_TOP_OFFSET = "-120px";
+  const RIGHT_PARAGRAPH_TOP_OFFSET = "140px";
 
   const containerRef = useRef<HTMLDivElement>(null);
   const vinayakRef = useRef<HTMLDivElement>(null);
@@ -202,24 +207,44 @@ export default function HeroSection() {
         ref={contentRef}
         className="absolute inset-0 z-20 flex items-end md:items-center px-6 md:px-12 lg:px-24 pb-16 md:pb-0 opacity-0 pointer-events-none"
       >
-        <div className="w-full max-w-[90rem] mx-auto pt-20">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-12 md:gap-24">
+        <div className="w-full max-w-7xl xl:max-w-[90rem] mx-auto pt-20">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-12 xl:gap-24">
             {/* Left side - Company Info */}
-            <div className="md:w-[45%]" style={{ marginTop: LEFT_PARAGRAPH_TOP_OFFSET, transform: `translateX(${LEFT_PARAGRAPH_X_OFFSET})` }}>
-              <p className="text-2xl md:text-3xl lg:text-4xl text-white leading-tight font-light">
+            <div
+              className="md:w-[42%] lg:w-[40%]"
+              style={{
+                marginTop: LEFT_PARAGRAPH_TOP_OFFSET,
+                transform: `translateX(var(--left-x-offset))`
+              }}
+            >
+              {/* CSS variable for responsive transform */}
+              <style dangerouslySetInnerHTML={{
+                __html: `
+                :root { --left-x-offset: ${LEFT_PARAGRAPH_X_OFFSET}; --right-x-offset: ${RIGHT_PARAGRAPH_X_OFFSET}; }
+                @media (min-width: 1600px) {
+                  :root { --left-x-offset: ${LEFT_PARAGRAPH_X_OFFSET_XL}; --right-x-offset: ${RIGHT_PARAGRAPH_X_OFFSET_XL}; }
+                }
+              `}} />
+              <p className="text-2xl md:text-3xl lg:text-3xl xl:text-4xl text-white leading-tight font-light">
                 <span className="text-[#00CFFF] font-semibold">Vinayak Tsalla</span> is the founder and CEO of{" "}
                 <span className="text-[#00CFFF] font-semibold">Tsalla Aerospace Technologies</span> Private Limited,
               </p>
 
-              <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 leading-relaxed font-light">
+              <p className="text-xl md:text-2xl lg:text-2xl xl:text-3xl text-gray-300 leading-relaxed font-light">
                 an innovative drone technology company based in <span className="text-[#00CFFF] font-semibold">Bengaluru</span>,
                 working to revolutionize the future of unmanned systems.
               </p>
             </div>
 
             {/* Right side - Personal Passion & Vision */}
-            <div className="md:w-[45%]" style={{ marginTop: RIGHT_PARAGRAPH_TOP_OFFSET, transform: `translateX(${RIGHT_PARAGRAPH_X_OFFSET})` }}>
-              <p className="text-xl md:text-2xl lg:text-3xl text-white leading-relaxed font-light">
+            <div
+              className="md:w-[42%] lg:w-[40%]"
+              style={{
+                marginTop: RIGHT_PARAGRAPH_TOP_OFFSET,
+                transform: `translateX(var(--right-x-offset))`
+              }}
+            >
+              <p className="text-xl md:text-2xl lg:text-2xl xl:text-3xl text-white leading-relaxed font-light">
                 Vinayak has always loved science and technology. His passion for engineering led him to establish Tsalla Aerospace
                 to build indigenous, world-class aerospace solutions for both defense and commercial sectors.
               </p>
