@@ -1,0 +1,30 @@
+/* App-specific styles */
+
+/* Ensure smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove default margins and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure full-width sections */
+section {
+  width: 100%;
+}
+
+/* Custom selection color */
+::selection {
+  background: rgba(0, 207, 255, 0.3);
+  color: white;
+}
+
+/* Ensure images don't overflow */
+img {
+  max-width: 100%;
+  height: auto;
+}
