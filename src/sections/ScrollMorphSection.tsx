@@ -146,7 +146,7 @@ const JOURNEY_CARDS = [
 ];
 
 const TOTAL_IMAGES = 20;
-const MAX_SCROLL = 3000;
+const MAX_SCROLL = 800; // Shortened scroll as we no longer have the shuffle rotation
 
 // Helper for linear interpolation
 const lerp = (start: number, end: number, t: number) => start * (1 - t) + end * t;
@@ -262,12 +262,6 @@ export default function ScrollMorphSection() {
   const morphProgress = useTransform(virtualScroll, [0, 600], [0, 1]);
   const smoothMorph = useSpring(morphProgress, { stiffness: 40, damping: 20 });
 
-  // 2. Scroll Rotation (Shuffling): Starts after morph
-  const scrollRotate = useTransform(virtualScroll, [600, 3000], [0, 1100]);
-  const smoothScrollRotate = useSpring(scrollRotate, { stiffness: 40, damping: 20 });
-
-
-
   // --- Intro Sequence ---
   useEffect(() => {
     const trigger = ScrollTrigger.create({
@@ -303,16 +297,10 @@ export default function ScrollMorphSection() {
 
   // --- Render Loop (Manual Calculation for Morph) ---
   const [morphValue, setMorphValue] = useState(0);
-  const [rotateValue, setRotateValue] = useState(0);
 
   useEffect(() => {
-    const unsubscribeMorph = smoothMorph.on("change", setMorphValue);
-    const unsubscribeRotate = smoothScrollRotate.on("change", setRotateValue);
-    return () => {
-      unsubscribeMorph();
-      unsubscribeRotate();
-    };
-  }, [smoothMorph, smoothScrollRotate]);
+    return smoothMorph.on("change", setMorphValue);
+  }, [smoothMorph]);
 
   // --- Content Opacity ---
   const contentOpacity = useTransform(smoothMorph, [0.8, 1], [0, 1]);
@@ -442,11 +430,7 @@ export default function ScrollMorphSection() {
                 const startAngle = -90 - spreadAngle / 2;
                 const step = spreadAngle / (TOTAL_IMAGES - 1);
 
-                const scrollProgress = Math.min(Math.max(rotateValue / 1000, 0), 1);
-                const maxRotation = spreadAngle * 1.2;
-                const boundedRotation = -scrollProgress * maxRotation;
-
-                const currentArcAngle = startAngle + i * step + boundedRotation;
+                const currentArcAngle = startAngle + i * step;
                 const arcRad = (currentArcAngle * Math.PI) / 180;
 
                 const arcPos = {
